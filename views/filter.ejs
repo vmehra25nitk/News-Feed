@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feed</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+
+<body style="background-color: #ebdc87;">
+
+    <script>
+        function saveForLater(url, title, author, urlToImage, description) {
+            const news = {
+                url: url,
+                title: title,
+                author: author,
+                urlToImage: urlToImage,
+                description: description
+            }
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById(url).classList.remove("btn-success");
+                    document.getElementById(url).classList.add("btn-info");
+                    document.getElementById(url).innerHTML = "Saved";
+                    console.log("Saved");
+                }
+            };
+            xhttp.open("POST", "http://localhost:5000/saveForLater", true);
+            xhttp.setRequestHeader("Content-Type", "application/json");
+            xhttp.send(JSON.stringify(news));
+            return;
+        }
+    </script>
+
+    <br>
+    <h2 class="text-center">Here are the Top Headlines</h2>
+
+
+    <div class="container mt-4">
+        <div class="form-group" style="background-color: #4ea0ae; padding: 2%;">
+            <h5>Filter your news</h5>
+            <form action="/filter" method="GET" class="form-inline" autocomplete="off">
+                <input type="text" name="keyword" id="keyword" class="form-control mx-sm-3 mb-2"
+                    placeholder="Search keyword" style="background-color: #cbeaed;" />
+                <div class="form-control mx-sm-3 mb-2" style="background-color: #d3de32;">
+                    <label class="control-label" for="Company">Category</label>
+                    <br>
+                    <select id="category" class="form-control" name="category" style="background-color: #cbeaed;">
+                        <option value="">Select</option>
+                        <option value="general">General</option>
+                        <option value="business">Business</option>
+                        <option value="entertainment">Entertainment</option>
+                        <option value="health">Health</option>
+                        <option value="science">Science</option>
+                        <option value="sports">Sports</option>
+                        <option value="technology">Technology</option>
+                    </select>
+                </div>
+                <button class="btn btn-success" type="submit">Filter</button>
+            </form>
+            <br>
+            <form action="/savedNews" method="GET">
+                <h6>Check your saved headlines</h6>
+                <button class="btn btn-success" type="submit">Here</button>
+            </form>
+        </div>
+        <br>
+        <div class="row">
+            <% for(var i = 0 ; i < response.articles.length ; i++) { %>
+            <div class="col-auto mb-3">
+                <div class="card" style="width: 18rem;">
+                    <% if(response.articles[i].urlToImage != null) { %>
+                    <img class="card-img-top" src="<%= response.articles[i].urlToImage %>" alt="Card image cap">
+                    <% } else { %>
+                    <img class="card-img-top" src="images/newsImage.jpg" alt="Card image1 cap">
+                    <% } %>
+
+                    <div class="card-body" style="background-color: #cbeaed;">
+                        <h5 class="card-title"><%= response.articles[i].title %></h5>
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <% if(response.articles[i].author != null) { %>
+                            Author - <%= response.articles[i].author %>
+                            <% } %>
+                        </h6>
+                        <button type="button" class="btn btn-success" id="<%= response.articles[i].url %>"
+                            onclick="saveForLater(`<%= response.articles[i].url %>`, `<%= response.articles[i].title %>`, `<%= response.articles[i].author %>`, `<%= response.articles[i].urlToImage %>`, `<%= response.articles[i].description %>`)">Save
+                            for later</button>
+                        <p class="card-text ellipsis"><%- response.articles[i].description %></p>
+                        <a href="<%= response.articles[i].url %>" class="btn btn-primary" target="_blank">Look full
+                            story</a>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+        </div>
+    </div>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+    </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+    </script>
+</body>
+
+</html>

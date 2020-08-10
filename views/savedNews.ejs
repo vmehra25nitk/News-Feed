@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feed</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+
+<body style="background-color: #ebdc87;">
+
+    <script>
+        function deleteNews(url) {
+            const news = {
+                url: url
+            }
+            console.log(news);
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    console.log(document.getElementById(url));
+                    document.getElementById(url).innerHTML = "Deleted";
+                    document.getElementById(url).classList.remove("btn-success");
+                    document.getElementById(url).classList.add("btn-danger");
+                    console.log("Saved");
+                }
+            };
+            xhttp.open("POST", "http://localhost:5000/deleteNews", true);
+            xhttp.setRequestHeader("Content-Type", "application/json");
+            xhttp.send(JSON.stringify(news));
+            return;
+        }
+    </script>
+
+    <br>
+    <h2 class="text-center">Here are your Saved Headlines</h2>
+
+
+    <div class="container mt-4">
+
+        <br>
+        <div class="row">
+            <% for(var i = 0 ; i < response.length ; i++) { %>
+            <div class="col-auto mb-3">
+                <div class="card" style="width: 18rem;">
+                    <% if(response[i].urlToImage != null) { %>
+                    <img class="card-img-top" src="<%= response[i].urlToImage %>" id="<%= response[i].urlToImage %>"
+                        onerror="this.onerror=null; this.src='images/newsImage.jpg'">
+                    <% } else { %>
+                    <img class="card-img-top" src="images/newsImage.jpg" alt="Card image1 cap">
+                    <% } %>
+
+                    <div class="card-body" style="background-color: #cbeaed;">
+                        <h5 class="card-title"><%= response[i].title %></h5>
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            <% if(response[i].author != null || response[i].author != "") { %>
+                            Author - <%= response[i].author %>
+                            <% } %>
+                        </h6>
+                        <button type="button" id="<%= response[i].url %>" class="btn btn-success"
+                            onclick="deleteNews(`<%= response[i].url %>`)">Delete</button>
+                        <p class="card-text ellipsis"><%- response[i].description %></p>
+                        <a href="<%= response[i].url %>" class="btn btn-primary" target="_blank">Look full
+                            story</a>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+        </div>
+    </div>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
+    </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+    </script>
+</body>
+
+</html>
