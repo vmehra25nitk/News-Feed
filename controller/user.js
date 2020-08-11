@@ -127,6 +127,12 @@ exports.getSavedNews = (req, res) => {
 }
 
 
+exports.getLogout = (req, res) => {
+    req.logOut();
+    res.redirect('/');
+}
+
+
 
 
 

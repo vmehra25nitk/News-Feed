@@ -15,6 +15,8 @@ router.get('/filter', ensureAuthenticated, userController.getFilter);
 
 router.get('/savedNews', ensureAuthenticated, userController.getSavedNews);
 
+router.get('/logout', userController.getLogout);
+
 router.post('/saveForLater', ensureAuthenticated, userController.postSaveForLater);
 
 router.post('/login', userController.postLogin);
